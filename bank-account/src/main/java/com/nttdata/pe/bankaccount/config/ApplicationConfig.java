@@ -37,4 +37,6 @@ public class ApplicationConfig implements WebFluxConfigurer {
                 .maxAge(3600);
     }
 
+
+
 }

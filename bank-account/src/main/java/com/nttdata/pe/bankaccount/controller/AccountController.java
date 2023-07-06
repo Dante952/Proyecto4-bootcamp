@@ -9,8 +9,11 @@ import com.nttdata.pe.bankaccount.mapper.TransactionMapper;
 import com.nttdata.pe.bankaccount.model.Account;
 import com.nttdata.pe.bankaccount.service.AccountService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,24 +23,33 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
+@AllArgsConstructor
 @RequestMapping("/account")
 public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    FeignClient feignClient;
+    private FeignClient feignClient;
+    @Autowired
+    private ReactiveCircuitBreakerFactory reactiveCircuitBreakerFactory;
 
-    @CircuitBreaker(name="AccountService", fallbackMethod = "accountFallback")
+
     @PostMapping
+    @CircuitBreaker(name="AccountService", fallbackMethod = "accountFallback")
     public ResponseEntity<Mono<Account>> register(@Valid @RequestBody AccountRegisterDto accountRegisterDto){
 
-        Mono<Account> accountMono=feignClient.getCustomerByDni(accountRegisterDto.getPersonalCustomer()).flatMap(
-                customerDto -> accountService.save(AccountMapper.INSTANCE.mapRegister(accountRegisterDto), customerDto));
+        Mono<Account> accountMono=feignClient.getCustomerByDni(accountRegisterDto.getPersonalCustomer())
+                .flatMap(customerDto -> accountService.save(AccountMapper.INSTANCE.mapRegister(accountRegisterDto), customerDto))
+                .transform(it -> {
+                    ReactiveCircuitBreaker rcb = reactiveCircuitBreakerFactory.create("customer-service");
+                    return rcb.run(it, throwable -> Mono.just(Account.builder().messageError("Customer service is down").build()));
+                });
 
-        return new ResponseEntity<>(accountMono, HttpStatus.CREATED);
+        return new ResponseEntity<>(accountMono, HttpStatus.OK);
     }
 
     public ResponseEntity<String> accountFallback(Exception e){
+
         return new ResponseEntity<>("Customer service is down", HttpStatus.OK);
     }
 

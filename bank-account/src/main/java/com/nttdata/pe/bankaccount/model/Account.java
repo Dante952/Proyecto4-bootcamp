@@ -1,5 +1,6 @@
 package com.nttdata.pe.bankaccount.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -16,6 +17,7 @@ import java.util.List;
 ;
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Account {
     @Id
     @Indexed(unique = true)
@@ -33,6 +35,8 @@ public class Account {
     private TypeAccount typeAccount;
 
     private List<Transaction> transactions;
+
+    private String messageError;
 
 
 }
