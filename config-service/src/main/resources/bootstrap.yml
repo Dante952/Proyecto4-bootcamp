@@ -1,18 +1,19 @@
 server:
   port: 8084
-
 spring:
   cloud:
     config:
       server:
         git:
           uri: https://github.com/Dante952/Proyecto4-bootcamp.git
-          searchPath: config-data
+          searchPaths: config-data
           username: ${GIT_USER}
           password: ${GIT_PASSWORD}
+          default-label: "main"
   security:
     user:
       name: root
       password: s3cr3t
-      
+
+
 
