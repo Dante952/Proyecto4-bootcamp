@@ -8,6 +8,7 @@ import com.nttdata.pe.bankaccount.mapper.AccountMapper;
 import com.nttdata.pe.bankaccount.mapper.TransactionMapper;
 import com.nttdata.pe.bankaccount.model.Account;
 import com.nttdata.pe.bankaccount.service.AccountService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class AccountController {
     @Autowired
     FeignClient feignClient;
 
+    @CircuitBreaker(name="AccountService", fallbackMethod = "accountFallback")
     @PostMapping
     public ResponseEntity<Mono<Account>> register(@Valid @RequestBody AccountRegisterDto accountRegisterDto){
 
@@ -33,6 +35,10 @@ public class AccountController {
                 customerDto -> accountService.save(AccountMapper.INSTANCE.mapRegister(accountRegisterDto), customerDto));
 
         return new ResponseEntity<>(accountMono, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<String> accountFallback(Exception e){
+        return new ResponseEntity<>("Customer service is down", HttpStatus.OK);
     }
 
     @PostMapping("/transaction")
