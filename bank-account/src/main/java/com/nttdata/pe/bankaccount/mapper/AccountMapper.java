@@ -16,7 +16,6 @@ public interface AccountMapper {
     AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
     default Account mapRegister(AccountRegisterDto accountRegisterDto){
         return Account.builder()
-                .personalCustomer(accountRegisterDto.getPersonalCustomer())
                 .amount(accountRegisterDto.getAmount())
                 .typeAccount(TypeAccount.valueOf(accountRegisterDto.getTypeAccount()))
                 .transactions(new ArrayList<>())

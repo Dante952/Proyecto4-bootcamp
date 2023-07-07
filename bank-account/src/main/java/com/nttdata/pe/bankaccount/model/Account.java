@@ -1,6 +1,7 @@
 package com.nttdata.pe.bankaccount.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nttdata.pe.bankaccount.dto.CustomerDto;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -26,7 +27,7 @@ public class Account {
     private String accountNumber;
 
     @NotEmpty(message = "{NotEmpty.customer.personalCustomer}")
-    private String personalCustomer;
+    private CustomerDto personalCustomer;
 
     @NotEmpty(message = "{NotEmpty.customer.amount}")
     private Double amount;

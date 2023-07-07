@@ -6,4 +6,11 @@ spring:
       uri: http://localhost:8084
       username: root
       password: s3cr3t
-
+management:
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
         }else{
             account.setAccountNumber("CUR"+customerDto.getDni());
         }
-        account.setPersonalCustomer(customerDto.getDni());
+        account.setPersonalCustomer(customerDto);
         return this.accountRepository.save(account);
     }
 

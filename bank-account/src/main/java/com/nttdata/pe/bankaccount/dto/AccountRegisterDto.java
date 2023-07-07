@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class AccountRegisterDto {
 
-    @NotEmpty(message = "{NotEmpty.customer.personalCustomer}")
+    @NotEmpty(message = "{NotEmpty.account.dni}")
     @Pattern(regexp = "[1-9][0-9]{7}", message = "{Pattern.customer.dni}")
     private String personalCustomer;
 
