@@ -3,7 +3,8 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://patriciotinez:PJeqNmcI37QE9gVY@bank-reactivedb.mn3f7rr.mongodb.net/
+      uri: mongodb+srv://patriciotinez:PJeqNmcI37QE9gVY@bank-reactivedb.mn3f7rr.mongodb.net/bank_app
+      database: bank_app
 eureka:
   client:
     serviceUrl:
