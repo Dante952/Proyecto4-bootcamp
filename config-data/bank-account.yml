@@ -3,9 +3,8 @@ server:
 spring:
   data:
     mongodb:
-      database: bank_db
-      host: localhost
-      port: 27017
+      uri: mongodb+srv://patriciotinez:PJeqNmcI37QE9gVY@bank-reactivedb.mn3f7rr.mongodb.net/bank_app
+      database: bank_app
 eureka:
   client:
     serviceUrl:
